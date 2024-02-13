@@ -1,0 +1,17 @@
+-*- outline -*-
+
+Things it might be nice to do someday.  I haven't evaluated all of
+these suggestions... their presence here doesn't imply my endorsement.
+-pg
+
+* Create a base class mgsolver and poissonsolver a derived class
+  DONE
+
+* Add capability of multi-fluid Boltzmann distribution in the
+BoltzmannPoisson solver. Application: dusty plasmas/dust in plasma
+
+* Add capability of (multi-)fluid Kappa distribution (see Hau and Fu, 
+  Mathematical and physical aspects of Kappa velocity distribution, 
+	Phys. Plasmas, 14, 110702, 2007)
+
+

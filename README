@@ -1,0 +1,248 @@
+
+															Mudfas Version 0.9
+																 May 2000
+
+
+Introduction:
+=============
+
+Mudfas is a nonlinear 2D/3D Poisson solver written in C++ using the C++
+template class library for scientific computing Blitz++
+(http://oonumerics.org/blitz). Therefore in order to use Mudfas, you should
+have available a recent version of Blitz++.
+
+It has been tested on the following machines:
+-Pentium/Linux/g++
+-Pentium/Linux/KCC
+-DEC Alpha/OSF1/cxx
+-SUN Sparc/SunOS/g++
+-HP/HP-UX/KCC
+
+A prototype/test version written in Matlab is also included.
+
+The nonlinear 2D/3D Poisson equation is to be solved over a rectangular
+domain and is written
+
+				 \nabla^2\phi(r)-\exp(\phi(r)/T_e(r))=-\rho(r), r\in\Omega
+
+with any combination of
+
+- periodic, 
+- specified (Dirichlet),
+- mixed (Dirichlet/Neumann)
+
+derivative boundary conditions.
+
+Mudfas implements a multigrid method for nonlinear elliptic equation. The
+basic algorithm is a nonlinear multigrid with a recursive formulation as
+described in [wesseling, 1991].
+
+Mudfas consists of two schedules. The first schedule, performed
+systematically, is a full multigrid schedule (FMG) or nested iterations,
+with an adaptive strategy which allows to skip coarse-grid correction (the
+recursion in the multigrid algorithm) if the specified accuracy is already
+reached on that grid [wesseling, 1991]. The FMG might be followed by
+maximum n iterations of the adaptive multigrid schedule in order to reach a
+higher accuracy if required. The relaxation algorithm used is a
+Gauss-Seidel-Newton relaxation [press, 1992]. In both 2D and 3D, T_e can be
+any arbitrary functions.
+
+License:
+========
+
+Mudfas is distributed under the terms of the GNU General Public License.
+
+Content:
+========
+
+.:
+total 782
+-rw-r--r--    1 patrick  patrick        47 Oct  9 13:10 AUTHORS
+-rwxr-xr-x    1 patrick  patrick     18007 Oct  9 13:10 COPYING
+-rw-r--r--    1 patrick  patrick      3216 Oct 11 21:13 ChangeLog
+-rwxr-xr-x    1 patrick  patrick      7831 Oct  9 13:10 INSTALL
+-rw-r--r--    1 patrick  patrick        35 Oct  9 13:10 Makefile.am
+-rw-r--r--    1 patrick  patrick     11526 Oct  9 15:57 Makefile.in
+-rw-r--r--    1 patrick  patrick        57 Oct  9 13:10 NEWS
+-rw-r--r--    1 patrick  patrick      3432 Oct 12 13:51 README
+-rw-r--r--    1 patrick  patrick    111110 Oct  9 15:56 aclocal.m4
+-rwxr-xr-x    1 patrick  patrick     35805 Oct  9 13:10 config.guess
+-rwxr-xr-x    1 patrick  patrick     15108 Oct 10 18:21 config.status
+-rwxr-xr-x    1 patrick  patrick     26450 Oct  9 13:10 config.sub
+-rwxr-xr-x    1 patrick  patrick    214091 Oct  9 16:05 configure
+-rw-r--r--    1 patrick  patrick      3524 Oct  9 14:34 configure.in
+-rwxr-xr-x    1 patrick  patrick      5598 Oct  9 13:10 install-sh
+-rwxr-xr-x    1 patrick  patrick    132686 Oct  9 13:10 ltmain.sh
+drwxr-xr-x    3 patrick  patrick      2048 Oct 10 18:21 matlab
+-rwxr-xr-x    1 patrick  patrick      8263 Oct  9 13:10 missing
+-rwxr-xr-x    1 patrick  patrick       725 Oct  9 13:10 mkinstalldirs
+drwxr-xr-x    3 patrick  patrick      1024 Oct 10 18:21 note
+drwxr-xr-x    3 patrick  patrick      2048 Oct 12 10:16 src
+drwxr-xr-x    4 patrick  patrick      1024 Oct 12 10:17 tests
+
+./matlab:
+total 633
+drwxr-xr-x    2 patrick  patrick      1024 Oct 10 10:00 CVS
+-rw-r--r--    1 patrick  patrick      3555 Oct  9 13:10 MGFAS2D.cpp
+-rw-r--r--    1 patrick  patrick      5373 Oct  9 13:10 MGFAS3D.cpp
+-rw-r--r--    1 patrick  patrick       606 Oct  9 13:10 Makefile.am
+-rw-r--r--    1 patrick  patrick       588 Oct  9 13:10 Makefile.hpux
+-rw-r--r--    1 patrick  patrick      9415 Oct  9 14:37 Makefile.in
+-rw-r--r--    1 patrick  patrick       408 Oct  9 13:10 Makefile.linux
+-rw-r--r--    1 patrick  patrick       606 Oct  9 13:10 Makefile.solaris
+-rw-r--r--    1 patrick  patrick      1519 Oct  9 13:10 Ne2d.m
+-rw-r--r--    1 patrick  patrick      1253 Oct  9 13:10 Ne3d.m
+-rw-r--r--    1 patrick  patrick      1537 Oct  9 13:10 Te2d.m
+-rw-r--r--    1 patrick  patrick      1253 Oct  9 13:10 Te3d.m
+-rwxr-xr-x    1 patrick  patrick       688 Oct  9 13:10 Types.hxx
+-rw-r--r--    1 patrick  patrick      2310 Oct  9 13:10 adjmd2.m
+-rw-r--r--    1 patrick  patrick      3267 Oct  9 13:10 adjmd3.m
+-rw-r--r--    1 patrick  patrick    200924 Oct  9 13:10 beamBS2d.hdf
+-rw-r--r--    1 patrick  patrick    199181 Oct  9 13:10 beamBS3d.hdf
+-rwxr-xr-x    1 patrick  patrick     25267 Oct  9 13:10 bmpoisson.cc
+-rwxr-xr-x    1 patrick  patrick      1313 Oct  9 13:10 bmpoisson.hxx
+-rwxr-xr-x    1 patrick  patrick     27706 Oct  9 13:10 bmpoisson3D.cc
+-rwxr-xr-x    1 patrick  patrick       726 Oct  9 13:10 bmpoisson3D.hxx
+-rwxr-xr-x    1 patrick  patrick      3034 Oct  9 13:10 bmutil.hxx
+-rw-r--r--    1 patrick  patrick      1251 Oct  9 13:10 calcnmudpack.m
+-rw-r--r--    1 patrick  patrick      1103 Oct  9 13:10 check_fun6_3d.m
+-rw-r--r--    1 patrick  patrick      1043 Oct  9 13:10 check_fun8_2d.m
+-rw-r--r--    1 patrick  patrick      2744 Oct  9 13:10 fmg2d.m
+-rw-r--r--    1 patrick  patrick      2759 Oct  9 13:10 fmg3d.m
+-rw-r--r--    1 patrick  patrick       935 Oct 10 10:00 fun1-2d.m
+-rw-r--r--    1 patrick  patrick       953 Oct 10 10:00 fun1-3d.m
+-rw-r--r--    1 patrick  patrick       905 Oct  9 13:10 fun2-2d.m
+-rw-r--r--    1 patrick  patrick       989 Oct  9 13:10 fun2-3d.m
+-rw-r--r--    1 patrick  patrick      1032 Oct 10 10:00 fun3-2d.m
+-rw-r--r--    1 patrick  patrick      1145 Oct 10 10:00 fun3-3d.m
+-rw-r--r--    1 patrick  patrick      1395 Oct  9 13:10 fun4-2d.m
+-rw-r--r--    1 patrick  patrick      1731 Oct  9 13:10 fun4-3d.m
+-rw-r--r--    1 patrick  patrick      1085 Oct  9 13:10 fun5-2d.m
+-rw-r--r--    1 patrick  patrick      1115 Oct  9 13:10 fun5-3d.m
+-rw-r--r--    1 patrick  patrick      1061 Oct  9 13:10 fun6-2d.m
+-rw-r--r--    1 patrick  patrick      1353 Oct  9 13:10 fun6-3d.m
+-rw-r--r--    1 patrick  patrick       964 Oct  9 13:10 fun7-2d.m
+-rw-r--r--    1 patrick  patrick      1212 Oct  9 13:10 fun8-2d.m
+-rw-r--r--    1 patrick  patrick      3292 Oct  9 13:10 initpde2.m
+-rw-r--r--    1 patrick  patrick      4421 Oct  9 13:10 initpde3.m
+-rw-r--r--    1 patrick  patrick      1616 Oct  9 13:10 lop2d.m
+-rw-r--r--    1 patrick  patrick      2037 Oct  9 13:10 lop3d.m
+-rw-r--r--    1 patrick  patrick      1948 Oct  9 13:10 mg2d.m
+-rw-r--r--    1 patrick  patrick      1945 Oct  9 13:10 mg3d.m
+-rw-r--r--    1 patrick  patrick      1241 Oct  9 13:10 mgfas2d.m
+-rw-r--r--    1 patrick  patrick      1088 Oct  9 13:10 mgfas3d.m
+-rw-r--r--    1 patrick  patrick       714 Oct  9 13:10 nlF.m
+-rw-r--r--    1 patrick  patrick       723 Oct  9 13:10 nldF.m
+-rw-r--r--    1 patrick  patrick      1035 Oct  9 13:10 plot2dUF.m
+-rw-r--r--    1 patrick  patrick      1892 Oct  9 13:10 plot3dUF.m
+-rw-r--r--    1 patrick  patrick      1468 Oct  9 13:10 plotdefect2d.m
+-rw-r--r--    1 patrick  patrick      2179 Oct  9 13:10 plotdefect3d.m
+-rw-r--r--    1 patrick  patrick      2556 Oct  9 13:10 prolon1.m
+-rw-r--r--    1 patrick  patrick      3532 Oct  9 13:10 prolon2.m
+-rw-r--r--    1 patrick  patrick      3882 Oct  9 13:10 prolon3.m
+-rw-r--r--    1 patrick  patrick      2601 Oct  9 13:10 res2.m
+-rw-r--r--    1 patrick  patrick      4278 Oct  9 13:10 res3.m
+-rw-r--r--    1 patrick  patrick      3044 Oct  9 13:10 resu2.m
+-rw-r--r--    1 patrick  patrick      5099 Oct  9 13:10 resu3.m
+-rw-r--r--    1 patrick  patrick      3434 Oct  9 13:10 smooth2d.m
+-rw-r--r--    1 patrick  patrick      5563 Oct  9 13:10 smooth3d.m
+-rw-r--r--    1 patrick  patrick      2224 Oct  9 13:10 solver2d_def.m
+-rw-r--r--    1 patrick  patrick      2447 Oct  9 13:10 solver3d_def.m
+-rw-r--r--    1 patrick  patrick      1435 Oct  9 13:10 solver_const.m
+-rw-r--r--    1 patrick  patrick      2443 Oct  9 13:10 solver_par_parsing.m
+-rw-r--r--    1 patrick  patrick      1193 Oct  9 13:10 swk2.m
+-rw-r--r--    1 patrick  patrick      1275 Oct  9 13:10 swk3.m
+-rw-r--r--    1 patrick  patrick      1227 Oct  9 13:10 trsfc2.m
+-rw-r--r--    1 patrick  patrick      1375 Oct  9 13:10 trsfc3.m
+-rw-r--r--    1 patrick  patrick      3865 Oct  9 13:10 view_solver.m
+
+./note:
+-rw-r--r--    1 patrick  patrick       423 Oct  9 13:10 Makefile.am
+-rw-r--r--    1 patrick  patrick      9228 Oct  9 14:37 Makefile.in
+-rw-r--r--    1 patrick  patrick      1656 Oct  9 13:10 appendix.m
+-rw-r--r--    1 patrick  patrick      1386 Oct  9 13:10 calctable.m
+-rw-r--r--    1 patrick  patrick      1100 Oct  9 13:10 fun1-2d.m
+-rw-r--r--    1 patrick  patrick      1207 Oct  9 13:10 fun1-3d.m
+-rw-r--r--    1 patrick  patrick       932 Oct  9 13:10 fun3-2d.m
+-rw-r--r--    1 patrick  patrick      1009 Oct  9 13:10 fun3-3d.m
+-rw-r--r--    1 patrick  patrick      1142 Oct  9 13:10 fun4-2d.m
+-rw-r--r--    1 patrick  patrick      1270 Oct  9 13:10 fun4-3d.m
+-rw-r--r--    1 patrick  patrick      1143 Oct  9 13:10 fun5-2d.m
+-rw-r--r--    1 patrick  patrick      1272 Oct  9 13:10 fun5-3d.m
+-rw-r--r--    1 patrick  patrick      1368 Oct  9 13:10 fun6-2d.m
+-rw-r--r--    1 patrick  patrick      1594 Oct  9 13:10 fun6-3d.m
+-rw-r--r--    1 patrick  patrick      1149 Oct  9 13:10 fun7-2d.m
+-rw-r--r--    1 patrick  patrick      1427 Oct  9 13:10 fun7-3d.m
+-rw-r--r--    1 patrick  patrick      1206 Oct  9 13:10 fun8-2d.m
+-rw-r--r--    1 patrick  patrick      1485 Oct  9 13:10 fun8-3d.m
+-rw-r--r--    1 patrick  patrick      1346 Oct  9 13:10 plotEfield.m
+-rw-r--r--    1 patrick  patrick      1683 Oct  9 13:10 plotEfield3d.m
+-rw-r--r--    1 patrick  patrick      2726 Oct  9 13:10 plotd2d.m
+-rw-r--r--    1 patrick  patrick      3069 Oct  9 13:10 plotd3d.m
+-rw-r--r--    1 patrick  patrick      1126 Oct  9 13:10 plotphi.m
+-rw-r--r--    1 patrick  patrick      1193 Oct  9 13:10 plotphi3d.m
+-rw-r--r--    1 patrick  patrick     21019 Oct  9 13:10 poisson.tex
+-rw-r--r--    1 patrick  patrick      2171 Oct  9 13:10 solver2d_def.m
+-rw-r--r--    1 patrick  patrick      2470 Oct  9 13:10 solver3d_def.m
+-rw-r--r--    1 patrick  patrick      1442 Oct  9 13:10 startup.m
+-rw-r--r--    1 patrick  patrick      3826 Oct  9 13:10 test1.m
+-rw-r--r--    1 patrick  patrick      3403 Oct  9 13:10 test3.m
+-rw-r--r--    1 patrick  patrick      3921 Oct  9 13:10 test4.m
+-rw-r--r--    1 patrick  patrick      3921 Oct  9 13:10 test5.m
+-rw-r--r--    1 patrick  patrick      3652 Oct  9 13:10 test6.m
+-rw-r--r--    1 patrick  patrick      3260 Oct  9 13:10 test7.m
+-rw-r--r--    1 patrick  patrick      2842 Oct  9 13:10 test8.m
+-rw-r--r--    1 patrick  patrick       876 Oct  9 13:10 testall.m
+
+./src:
+-rw-r--r--    1 patrick  patrick       575 Oct  9 13:10 Makefile.am
+-rw-r--r--    1 patrick  patrick     49728 Oct  9 14:37 Makefile.in
+-rw-r--r--    1 patrick  patrick      7617 Oct  9 13:10 argparsing.cpp
+-rw-r--r--    1 patrick  patrick      1323 Oct  9 13:10 argparsing.h
+-rwxr-xr-x    1 patrick  patrick      8163 Oct  9 13:10 depcomp
+-rw-r--r--    1 patrick  patrick     19950 Oct 12 09:30 init.cpp
+-rw-r--r--    1 patrick  patrick      2592 Oct 12 09:30 init.h
+-rw-r--r--    1 patrick  patrick      5370 Oct  9 13:10 lop.cpp
+-rw-r--r--    1 patrick  patrick      1668 Oct  9 13:10 lop.h
+-rw-r--r--    1 patrick  patrick     14268 Oct 12 09:30 mudfas.cpp
+-rw-r--r--    1 patrick  patrick      8057 Oct 12 09:32 mudfas.h
+-rw-r--r--    1 patrick  patrick     13690 Oct  9 13:10 prolon.cpp
+-rw-r--r--    1 patrick  patrick      1546 Oct  9 13:10 prolon.h
+-rw-r--r--    1 patrick  patrick      4778 Oct  9 13:10 qnc.cpp
+-rw-r--r--    1 patrick  patrick      1361 Oct  9 13:10 qnc.h
+-rw-r--r--    1 patrick  patrick      8998 Oct  9 13:10 restrict.cpp
+-rw-r--r--    1 patrick  patrick      1467 Oct  9 13:10 restrict.h
+-rw-r--r--    1 patrick  patrick      2298 Oct  9 13:10 restrict_ops.cpp
+-rw-r--r--    1 patrick  patrick      1329 Oct  9 13:10 restrict_ops.h
+-rw-r--r--    1 patrick  patrick      7943 Oct  9 13:10 restrictphi.cpp
+-rw-r--r--    1 patrick  patrick      1487 Oct  9 13:10 restrictphi.h
+-rw-r--r--    1 patrick  patrick      9932 Oct  9 13:10 smooth.cpp
+-rw-r--r--    1 patrick  patrick      1810 Oct  9 13:10 smooth.h
+-rw-r--r--    1 patrick  patrick      2508 Oct  9 13:10 smooth_ops.cpp
+-rw-r--r--    1 patrick  patrick      1704 Oct  9 13:10 smooth_ops.h
+
+./tests:
+drwxr-xr-x    2 patrick  patrick      1024 Oct  9 18:02 CVS
+-rw-r--r--    1 patrick  patrick      2678 Oct  9 13:10 Makefile.am
+-rw-r--r--    1 patrick  patrick     17199 Oct  9 14:37 Makefile.in
+-rwxr-xr-x    1 patrick  patrick      8163 Oct  9 13:10 depcomp
+-rw-r--r--    1 patrick  patrick      1569 Oct  9 13:10 main.cpp
+-rwxr-xr-x    1 patrick  patrick   7827710 Oct 12 10:17 main2d
+-rw-r--r--    1 patrick  patrick     13340 Oct  9 16:01 main2d.o
+-rwxr-xr-x    1 patrick  patrick   8633641 Oct 12 10:17 main3d
+-rw-r--r--    1 patrick  patrick     14644 Oct  9 16:03 main3d.o
+-rwxr-xr-x    1 patrick  patrick    853574 Oct  9 19:43 test
+-rw-r--r--    1 patrick  patrick       542 Oct  9 18:02 test.cpp
+-rw-r--r--    1 patrick  patrick    153068 Oct  9 19:43 test.o
+
+
+Bibliography:
+============
+
+W. H. Press,  S. A. Teukolsky, W. T. Vetterlin and B. P. Flannery,
+"Numerical recipes in C: the art of scientific computing", Cambridge
+University Press, Cambridge, 1992. ISBN 0-521-43108-5
+
+P. Wesseling, "An introduction to multigrid methods", John Wiley & Sons
+Ltd, Chichester, England, 1991. ISBN 0-471-93083-0.
+

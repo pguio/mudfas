@@ -1,0 +1,6 @@
+New in 0.9:
+The electron density need not to be constant in the Matlab version
+
+New in 2.0.b1:
+Added support for non-homogeneous normalising n_e given on a grid
+for Poisson-Boltzmann equation.

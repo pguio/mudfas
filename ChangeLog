@@ -1,0 +1,363 @@
+2023-02-11  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.118):
+	Updated with autoupdate 2.71.
+
+2023-02-11  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.117):
+	Added option subdir-objects to AM_INIT_AUTOMAKE().
+
+2019-05-10  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* tests/TestSolver.cpp (1.11):
+	Removed BZ_STD_SCOPE as deprecated in Blitz.
+
+2017-12-23  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/: mudfas.cpp (1.102), mudfas.h (1.103):
+	Enabled parsing of parameters for mixed boundary (alfa and gbdy).
+
+2017-11-26  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.76):
+	Save Te and ne fields as matlab m-files if debugLevel >=5.
+
+2017-11-26  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas-defs.h (1.47):
+	Added template functions saveMatlab for scalar, 1d, 2d and 3d arrays.
+
+2017-11-23  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.75):
+	Fixed test to check file reading correctness and added exception throwing.
+
+2013-11-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* lib/Makefile.am (1.4), tests/Makefile.am (1.39):
+	Updated INCLUDES target name to AM_CPPFLAGS as recommended.
+
+2012-11-09  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.116):
+	Bundled to patch version 2.0.3.
+
+2012-11-09  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.115):
+	Added available hdf5 support through --enable-hdf5-output.
+
+2012-11-09  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* tests/test-solver.h (1.20):
+	Fixed HDF4 cpp macros safeguarding.
+
+2012-03-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/Makefile.am (1.40): Removed unused and not cvs-controlled file c++-tools/fourier-fftw3.cpp from
+	the distro and install lists.
+
+2012-02-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/version.sty.in (1.1):
+	Version template file.
+
+2012-02-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.114):
+	Bundled to patch version 2.0.2.
+
+2012-02-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.113):
+	Added generation of LaTeX version file.
+
+2012-02-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/poisson.tex (1.11):
+	Added information on version to the documentation.
+
+2012-01-25  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/poisson.tex (1.10):
+	Updated standard.
+
+2011-11-15  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/Makefile.am (1.39):
+	More fix for EXTRA_DIST target.
+
+2011-11-15  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/Makefile.am (1.38), Makefile.am (1.13):
+	More fix for EXTRA_DIST target.
+
+2011-11-15  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* Makefile.am (1.12), src/Makefile.am (1.37), tests/Makefile.am
+	  (1.38):
+	Fixed EXTRA_DIST targets.
+
+2011-11-10  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.112):
+	Bundled to patch version 2.0.1.
+
+2011-11-09  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas.cpp (1.101):
+	Cosmetic change in comments.
+
+2011-11-09  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas.cpp (1.100):
+	Added fireguard to print solver status of only masterProc when using MPI.
+
+2011-11-07  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/: boundary.h (1.14), init.cpp (1.54), poisson-boltzmann.h
+	  (1.46), poisson.h (1.26):
+	Added macro for conditional compilation depending on whether the "old"
+	blitz is in use or the new version with unified template machinery.
+
+2011-11-07  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.74):
+	Use explicit constructor to avoid compilation problem with ifort and the
+	new blitz with unified template machinery.
+
+2011-03-26  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.111):
+	Bundled into version 2.0.0.
+
+2011-03-26  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* update-cl.sh (1.2), doc/appendix.m (1.4), doc/calctable.m (1.2),
+	  doc/fun1_2d.m (1.2), doc/fun1_3d.m (1.2), doc/fun3_2d.m (1.2),
+	  doc/fun3_3d.m (1.2), doc/fun4_2d.m (1.2), doc/fun4_3d.m (1.2),
+	  doc/fun5_2d.m (1.2), doc/fun5_3d.m (1.2), doc/fun6_2d.m (1.2),
+	  doc/fun6_3d.m (1.2), doc/fun7_2d.m (1.2), doc/fun7_3d.m (1.2),
+	  doc/fun8_2d.m (1.2), doc/fun8_3d.m (1.2), doc/plotEfield.m (1.2),
+	  doc/plotEfield3d.m (1.2), doc/plotd2d.m (1.2), doc/plotd3d.m
+	  (1.2), doc/plotphi.m (1.2), doc/plotphi3d.m (1.2),
+	  doc/poisson.tex (1.9), doc/solver2d_def.m (1.3),
+	  doc/solver3d_def.m (1.3), doc/startup.m (1.2), doc/test1.m (1.2),
+	  doc/test3.m (1.2), doc/test4.m (1.2), doc/test5.m (1.2),
+	  doc/test6.m (1.2), doc/test7.m (1.2), doc/test8.m (1.2),
+	  doc/testall.m (1.2), matlab/MGFAS2D.cpp (1.7), matlab/MGFAS3D.cpp
+	  (1.5), matlab/Ne2d.m (1.7), matlab/Ne3d.m (1.6), matlab/Te2d.m
+	  (1.5), matlab/Te3d.m (1.5), matlab/adjmd2.m (1.5),
+	  matlab/adjmd3.m (1.4), matlab/calcnmudpack.m (1.3),
+	  matlab/check_fun8_2d.m (1.3), matlab/check_fun8_3d.m (1.4),
+	  matlab/fmg2d.m (1.5), matlab/fmg3d.m (1.5), matlab/fun10_2d.m
+	  (1.4), matlab/fun11_2d.m (1.2), matlab/fun1_2d.m (1.2),
+	  matlab/fun1_3d.m (1.2), matlab/fun2_2d.m (1.2), matlab/fun2_3d.m
+	  (1.2), matlab/fun3_2d.m (1.2), matlab/fun3_3d.m (1.2),
+	  matlab/fun4_2d.m (1.3), matlab/fun4_3d.m (1.3), matlab/fun5_2d.m
+	  (1.2), matlab/fun5_3d.m (1.2), matlab/fun6_2d.m (1.4),
+	  matlab/fun6_3d.m (1.2), matlab/fun7_2d.m (1.2), matlab/fun7_3d.m
+	  (1.2), matlab/fun8_2d.m (1.2), matlab/fun8_3d.m (1.3),
+	  matlab/fun9_2d.m (1.2), matlab/initpde2.m (1.3),
+	  matlab/initpde3.m (1.3), matlab/lop2d.m (1.3), matlab/lop3d.m
+	  (1.3), matlab/mg2d.m (1.5), matlab/mg3d.m (1.5), matlab/mgfas2d.m
+	  (1.4), matlab/mgfas3d.m (1.4), matlab/nlF.m (1.5), matlab/nldF.m
+	  (1.5), matlab/plot2dUF.m (1.5), matlab/plot3dUF.m (1.5),
+	  matlab/plotdefect2d.m (1.4), matlab/plotdefect3d.m (1.4),
+	  matlab/prolon1.m (1.3), matlab/prolon2.m (1.3), matlab/prolon3.m
+	  (1.3), matlab/res2.m (1.3), matlab/res3.m (1.3), matlab/resu2.m
+	  (1.3), matlab/resu3.m (1.3), matlab/smooth2d.m (1.3),
+	  matlab/smooth3d.m (1.3), matlab/solver2d_def.m (1.5),
+	  matlab/solver3d_def.m (1.5), matlab/solver_const.m (1.6),
+	  matlab/solver_par_parsing.m (1.3), matlab/swk2.m (1.3),
+	  matlab/swk3.m (1.3), matlab/trsfc2.m (1.3), matlab/trsfc3.m
+	  (1.3), matlab/view_solver.m (1.4), src/boundary.h (1.13),
+	  src/init.cpp (1.53), src/linear-solver.cpp (1.25),
+	  src/linear-solver.h (1.15), src/mudfas-defs.h (1.46),
+	  src/mudfas.cpp (1.99), src/mudfas.h (1.102),
+	  src/nonlinear-solver.cpp (1.25), src/nonlinear-solver.h (1.15),
+	  src/poisson-boltzmann.cpp (1.73), src/poisson-boltzmann.h (1.45),
+	  src/poisson.cpp (1.29), src/poisson.h (1.25), src/prolon.cpp
+	  (1.21), src/restrict.cpp (1.29), tests/Blitz.cpp (1.12),
+	  tests/Integrate.cpp (1.23), tests/Parser.cpp (1.35),
+	  tests/TestSolver.cpp (1.10), tests/bench-solver.sh (1.2),
+	  tests/blitz1.m (1.2), tests/test-solver.h (1.19):
+	Updated header information.
+
+2010-11-11  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.110):
+	Updated email address to Gmail address.
+
+2010-01-13  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.72):
+	Added comment on tn the way stdTe relates to the width parameter of the
+	temperature profile.
+
+2009-10-13  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/: appendix.m (1.3), poisson.tex (1.7):
+	Grouped tables of grid points by 200 in 8 tables up to n=3219.
+
+2009-10-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/poisson.tex (1.6):
+	Added Tables with multigrid setup up to n=1459
+
+2009-10-05  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.71):
+	Added ascii outputs for electron temperature and unperturbed density fields
+	on finest grid.
+
+2009-09-18  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.70):
+	Small cosmetic change in the printOn member of the class.
+
+2009-09-17  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.109):
+	Updated to version 2.0.b1 and tag new version.
+
+2009-09-15  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.69):
+	Added whether member nhmFilename is not empty to take into acccount the
+	relative density described by the arrays mgDens.
+	Fixed bug when initialising srcSize and dstSize by using shape() instead of
+	size() member function.
+	Fixed calculation of rDest and I in interpolate() member function.
+
+2009-09-11  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/: poisson-boltzmann.cpp (1.68), poisson-boltzmann.h (1.44):
+	Draft core for non homogeneous density given by a model on a grid and
+	interpolated for the multigrid method.
+
+2009-09-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas-defs.h (1.45):
+	Added new type integer iField with dim DIM.
+
+2009-09-07  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* matlab/solver_const.m (1.5):
+	Embed solver constants in a structure.
+
+2009-06-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.108):
+	Added call to set up directory `m4' as an additional local Autoconf macro
+	directory.
+
+2009-01-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.107):
+	Updated to version 1.2.4 and tag new version.
+
+2009-01-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* doc/appendix.m (1.2):
+	Added code to calculate triplet (n,p,k) with n up to 1459.
+
+2009-01-07  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/poisson-boltzmann.cpp (1.67):
+	Fixed bug in setting x-Gaussian temperature profile, y-Gaussian was set.
+
+2008-07-23  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* matlab/fun11_2d.m (1.1):
+	Added test case with data from dust2 paper (dust4_2dn6.mat).
+
+2008-07-22  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.105):
+	Updated to version 1.2.3.
+
+2008-07-22  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.104):
+	Removed unecessary program and other C tests.
+	Simplified header tests with new macros.
+
+2008-07-22  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* tests/test-solver.h (1.18):
+	Added macro definition for MAX_VAR_DIMS and MAX_NC_NAME when necessary, as
+	it is the case in Fedora 9 (hdf-4.2r3-2.fc9.i386).
+
+2008-07-22  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/init.cpp (1.52):
+	Added parenthesis that triggered a warning for ambiguous statement.
+
+2008-05-29  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/init.cpp (1.51):
+	Moved using blitz::tensor statements within the functions where used.
+
+2008-04-16  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.103):
+	Removed option to enable thread safety Blitz since it is now included in
+	the AC_CHECK_BLITZ macro.
+
+2008-04-14  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* tests/Integrate.cpp (1.22):
+	Removed useless cout.width() statement since it set the width to only the
+	next insertion and width is reset to zero.
+
+2008-04-14  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas.cpp (1.98):
+	Fixed stream format manipulator.
+
+2008-04-11  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* tests/TestSolver.cpp (1.9):
+	Removed useless cout.width() statement since it set the width to only the
+	next insertion and width is reset to zero.
+
+2008-02-12  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas.cpp (1.97):
+	Fixed boolean conditional statement (iguess==0 into !iguess).
+
+2008-02-12  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/: mudfas.cpp (1.96), mudfas.h (1.101):
+	Added query method for initial guess flag.
+
+2008-02-08  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* Makefile.am (1.11):
+	Added target update-cl to update ChangeLog file.
+
+2008-02-07  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/mudfas.cpp (1.95):
+	Fixed a bug in the LUT for kcycle. V and W cycle were swapped.
+
+2007-09-26  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* configure.ac (1.101):
+	Added option --enable-threadsafe to turn on Blitz thread-safety features
+	by defining the BZ_THREADSAFE macro.  If enabled, code will look for pthreads,
+	OpenMP thread support to implement mutex locking of sensitive variables.
+
+2007-09-03  Patrick Guio <p.guio@ucl.ac.uk>
+
+	* src/: mudfas-defs.h (1.44), mudfas.h (1.100):
+	Moved include statement for <parser.h> from <mudfas.h> to <mudfas-defs.h>.
+
+2006-08-28  Patrick Guio <patrick.guio@matnat.uio.no>
+
+	* ChangeLog (1.1), ChangeLog.0 (1.164), update-cl.sh (1.1):
+	Moved manually filled in ChangeLog into ChangeLog.0.
+	Added script to fill in ChangeLog using cvs2cl.
+
