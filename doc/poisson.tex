@@ -1,0 +1,616 @@
+%
+% $Id: poisson.tex,v 1.11 2012/02/29 12:06:46 patrick Exp $
+%
+% Copyright (c) 2000-2011 Patrick Guio <patrick.guio@gmail.com>
+%
+% All Rights Reserved.
+%
+% This program is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 2.  of the License, or (at your
+% option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+% Public License for more details.
+%
+
+\documentclass[10pt,a4paper]{article}
+\usepackage{times}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage[round]{natbib}
+\usepackage[latin1,utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{tabularx}
+\usepackage{needspace}
+\usepackage{esdiff}
+\usepackage{physics}
+\usepackage{xspace}
+\usepackage{html}
+\usepackage{version}
+
+
+\parindent 0cm
+
+\def\Eq#1{Eq.~(#1)}
+
+\newcommand*{\matlab}{\textsf{Matlab}\xspace}
+\newcommand*{\mgfas}{\textsf{Mgfas}\xspace}
+\newcommand*{\mudpack}{\textsf{Mudpack}\xspace}
+\newcommand*{\mudfas}{\textsf{Mudfas}\xspace}
+
+
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\topfraction}{.8}
+\renewcommand{\bottomfraction}{.8}
+
+%\def\tablesize{\footnotesize}
+\def\tablesize{\small}
+
+\bibliographystyle{plainnat}
+
+\title{\mudfas: a nonlinear multigrid Poisson equation
+solver\\version~\version}
+\author{Patrick Guio}
+\date{\normalsize$ $Date: 2012/02/29 12:06:46 $ $,~ $ $Revision: 1.11 $ $}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Nonlinear Poisson equation}
+We want to solve the Poisson equation on a rectangular domain and with
+Boltzmann distributed electrons, i.e.\ in a quasi-static approximation.
+This is, in dimensionless variables, a nonlinear elliptic partial
+differential equation defined on the rectangular \emph{unit} domain $\Omega$
+with condition specified at the boundary $\partial\Omega$. The boundary
+condition can be categorised  in three classes. When the potential $\phi$ is
+specified at the boundary (insulated boundary), it is a \emph{Dirichlet}
+problem
+\begin{align}
+\left\{\begin{array}{lll}\displaystyle
+\grad^2\phi(\vec{r})-\exp\frac{\phi(\vec{r})}{T_e(\vec{r})}&=
+-\rho(\vec{r})&,\qquad\forall\vec{r}\in\Omega\\
+\phi(\vec{r})&=f(\vec{r})&,\qquad\forall\vec{r}\in\partial\Omega
+\end{array}\right.
+\label{eq:dirichlet} 
+\end{align} 
+When the normal derivative of the potential $\phi$ is  specified at the
+boundary (conductive boundary), it is a \emph{Neumann} problem
+
+\begin{align}
+\left\{\begin{array}{lll}\displaystyle
+\grad^2\phi(\vec{r})-\exp\frac{\phi(\vec{r})}{T_e(\vec{r})}&=
+-\rho(\vec{r})&,\qquad\forall\vec{r}\in\Omega\\
+\frac{\partial\phi(\vec{r})}{\partial{n}}&=f(\vec{r})&,
+\qquad\forall\vec{r}\in\partial\Omega 
+\end{array}\right.
+\label{eq:neumann} 
+\end{align}
+The Neumann problem can be included in a somewhat wider category
+of problem: problems with mixed derivative boundary condition.
+
+The third class of boundary condition \emph{requires} rectangular domains and 
+is the periodic boundary condition.
+
+The electron and ion density, $n_e$ and  $n_i$ are defined respectively 
+by
+\begin{align}
+n_i&=\int_\Omega\rho(\vec{r})\dint{\vec{r}}\\
+n_e&=\int_\Omega\exp\frac{\phi(\vec{r})}{T_e(\vec{r})}\dint{\vec{r}}
+\end{align}
+and we would like to insure to a good approximation the quasi-neutrality, i.e.\
+$n_e\simeq n_i$.
+
+\section{Linearisation}
+With the assumption that $\phi/T_e\ll 1$, this nonlinear Poisson equation can
+be linearised and leads to the following linear elliptic differential equation 
+\begin{align}
+\grad^2\phi(\vec{r})-1-\frac{\phi(\vec{r})}{T_e(\vec{r})}= -\rho(\vec{r})
+\label{eq:lpoisson}
+\end{align}
+This equation can be solved analytically for harmonic plane waves.
+
+\subsection{Harmonic plane waves solution}
+
+In the unit domain $\Omega$, let us consider the periodic ion charge
+distribution $\rho(\vec{r})=1+\rho_0\cos(\vec{k}\cdot\vec{r})$, where
+$\vec{k}$ is the wave vector of the plane wave, and look for a plane wave
+solution of the form $\phi(\vec{r})=\phi_0\cos(\vec{k}\cdot\vec{r})$.
+Replacing $\rho$ and $\phi$ into \Eq{\ref{eq:lpoisson}} leads to 
+
+\begin{align}
+-k^2\phi_0\exp(i\vec{k}\cdot\vec{r})-1-
+\frac{\phi_0}{T_e}\exp(i\vec{k}\cdot\vec{r})
+=-1-\rho_0\exp(i\vec{k}\cdot\vec{r})
+\end{align}
+Assuming in addition that $\vec{k}/2\pi$ is a vector with integer
+components, insures quasi neutrality $n_e=n_i$.
+The harmonic plane wave solution $\phi$ is then written
+\begin{align}
+\phi(\vec{r})=\frac{\rho_0}{k^2+1/T_e}\cos(\vec{k}\cdot\vec{r})
+\label{eq:lin}
+\end{align}
+
+\section{Nonlinear Poisson solvers}
+
+We performed a set of numerical experiments in both 2D and 3D with two
+solvers referred hereafter \mgfas and \mudfas. Our aim is to compare their
+respective accuracy.
+
+\subsection{\mgfas}
+\mgfas denotes the original 2D nonlinear Poisson solver developed by
+Steinar Børve. This solver implements a two-grid algorithm adapted from the 
+routine \texttt{mgfas}, a
+full multigrid algorithm for FAS (Full Approximate Storage) solution of
+nonlinear elliptic equation \citep{press:1992}. \mgfas denotes as well the
+extension to 3D developed by Lars Daldorff. The 2D version of \mgfas
+allows $T_e$ to be any arbitrary function while the 3D version is currently
+running with constant $T_e$. 
+In both 2D and 3D versions, the boundary conditions are ``hard-coded''.
+
+The parameter configuration in \mgfas has not been modified compared to the
+original setting, i.e.\ $\texttt{maxit}\!=\!10000$ and
+$\texttt{minerr}\!=\!5.0\mbox{e}^{-4}$.
+
+
+\subsection{\mudfas}
+\mudfas denotes the nonlinear 2D/3D Poisson solver I have first prototyped 
+with \matlab and then have written a production version in C++
+using the template class library for scientific computing
+Blitz++\footnote{http://oonumerics.org/blitz}. It implements a nonlinear
+multigrid method that handles, in a unified way, any combination of
+periodic, specified (Dirichlet), or mixed derivative boundary conditions
+inspired in its principle by the Fortran 77/90 package
+\mudpack\footnote{http://www.scd.ucar.edu/css/software/mudpack} for
+solving linear elliptic partial differential equations \citep{adams:1989}.  
+The basic algorithm is a nonlinear multigrid with a recursive formulation
+\citep{wesseling:1991}. 
+The boundary conditions are fully steerable by parameter parsing.
+
+\mudfas consists of two schedules. The first schedule, performed
+systematically, is a \emph{full multigrid schedule} (FMG) or nested iterations,
+with an adaptive strategy which allows to skip coarse-grid correction (the
+recursion in the multigrid algorithm) if the specified accuracy is already
+reached on that grid \citep{wesseling:1991}. The FMG might be followed 
+by maximum $n$ iterations of the \emph{adaptive multigrid schedule} in order
+to reach a higher accuracy if required. 
+
+The relaxation algorithm used is a Gauss-Seidel-Newton \citep{press:1992}.
+In both 2D and 3D, $T_e$ can be
+any arbitrary functions.
+
+The parameter configuration in \mudfas for the numerical experiments is
+$\texttt{maxcy}\!=\!2$, $\texttt{kcycle}\!=\!2$ (W-cycle) and 
+$\texttt{delta}\!=\!0.5$ (adaptive parameter), 
+$\texttt{tolmax}\!=\!5.0\mbox{e}^{-4}$,
+$\texttt{iprer}\!=\!2$ (number of pre-relaxation sweeps),
+$\texttt{ipost}\!=\!1$ (number of post-relaxation sweeps) and
+$\texttt{intpol}\!=\!1$ (multilinear prolongation or interpolation).
+
+\subsection{Boundary conditions}
+
+In order to compare the two solvers, the boundary conditions of \mudfas
+have been set to the same type as \mgfas.  
+In 2D, these are Dirichlet condition with $\phi=0$ on the edges $x=a$
+and $x=b$ and Neumann condition with $\partial\phi/\partial n=0$ on the
+edges $y=c$ and $y=d$. 
+In 3D, these are Dirichlet with $\phi=0$ on the edges $x=a$, $x=b$, $z=e$ 
+and $z=f$ and Neumann condition with $\partial\phi/\partial n=0$ on the edge
+$y=c$ and $y=d$. 
+
+\subsection{Accuracy measurement}
+
+In order to evaluate the accuracy of the solution, the defect (the opposite of 
+the residual) of the solution is calculated on the finest grid. 
+The defect $d_h$ of the solution on the grid with mesh size $h$ is
+\begin{align}
+d_h(\phi)=\grad_h^2\phi-\exp\left(\frac{\phi}{T_e}\right)+\rho
+\end{align}
+where $\grad_h^2$ is the  discrete Laplacian operator written in 2D
+\begin{align}
+\grad_h^2\phi_{i,j}=
+\frac{\phi_{i-1,j}-2\phi_{i,j}+\phi_{i+1,j}}{h_i^2}+
+\frac{\phi_{i,j-1}-2\phi_{i,j}+\phi_{i,j+1}}{h_j^2}
+\end{align}
+and in a similar way in 3D.
+
+\section{Numerical experiments}
+
+When not specified, the 2D numerical experiments are performed on a grid of
+\input{nxny.dat} corresponding to the domain \input{omega2d.dat} and the 3D
+numerical experiments on a grid of \input{nxnynz.dat} corresponding to the
+domain \input{omega3d.dat}
+The temperature $T_e$ is constant over $\Omega$ and equal to 2 when not
+specified.
+
+\subsection{Harmonic plane wave}
+
+\begin{figure}
+\centerline{\includegraphics[width=\columnwidth]{test1_2_2d}}
+\centerline{\includegraphics[width=\columnwidth]{test1_2_3d}}
+\caption{\emph{Upper} row, the defect of the 2D
+potential, the parameters are \protect\input{partest1_2d.dat}. \emph{Lower}
+row, the defect of a cut into the $xy$-plane
+of the 3D potential, the parameters are \protect\input{partest1_3d.dat} }
+\label{fig:1_2_23d}
+\end{figure}
+
+\begin{table}
+\centerline{
+\tablesize \begin{tabular}{lcc}
+\hline\hline & $m$ & $\sigma$\\ \hline
+\csname @@input\endcsname test1_2d.dat
+\hline\hline
+\end{tabular}
+\hspace*{0.5cm}
+\begin{tabular}{lcc}
+\hline\hline & $m$ & $\sigma$\\ \hline
+\csname @@input\endcsname test1_3d.dat
+\hline\hline
+\end{tabular} 
+}
+\caption{Mean value and standard deviation of the defect of the
+2D potential (\emph{left} table) shown in the \emph{upper} row in 
+Figure~\ref{fig:1_2_23d},
+and of the 3D potential (\emph{right} table). A cut into the $xy$-plane of the
+3D potential is shown in the \emph{lower} row in Figure~\ref{fig:1_2_23d} }
+\label{table:test1_23d}
+\end{table}
+
+Figure~\ref{fig:1_2_23d} shows the defect of the 
+potential given by the linear approximation \Eq{\ref{eq:lin}}, and 
+calculated by both solvers in 2D and 3D respectively. 
+Table~\ref{table:test1_23d} presents the mean value and standard
+deviation of the defect over the domain $\Omega$. 
+
+Note that the accuracy achieved by \mudfas is reached with just running the
+FMG schedule, i.e.\ no extra adaptive multigrid schedule is needed in order
+to achieve the prescribed accuracy.
+
+\subsection{Wave number influence}
+
+Let us know consider harmonic plane waves along the $y$-axis with different
+wave number $k_y$.  For our numerical experiment, we have considered six
+different wave numbers $k_y=2\pi$, $4\pi$, $6\pi$, $8\pi$, $10\pi$ and
+$12\pi$.  
+
+\begin{table}
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+$k_y$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$\\
+\hline
+\csname @@input\endcsname test3_2d.dat
+\hline\hline
+\end{tabular} }
+\vspace*{0.1cm}
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+$k_y$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$\\
+\hline
+\csname @@input\endcsname test3_3d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean value and standard deviation of
+the defect of the 2D potential (\emph{upper} table) and the 3D potential
+(\emph{lower} table) for the different wave numbers}
+\label{table:test3_23d}
+\end{table}
+
+Table~\ref{table:test3_23d} presents the mean value  and standard deviation
+of the defect for the 2D and 3D potential respectively.  Note again the
+higher accuracy achieved by \mudfas with just one FMG. 
+
+There is no tremendous influence of the wave number on the accuracy  even
+though the slight deterioration of accuracy at large wave number (short
+wave) for \mudfas can be interpreted in the following way.  There are three
+grids in both the 2D and 3D \mudfas experiment, and the number of grids
+improves the coarse-grid correction, i.e.\ improves the correction on waves
+with small wave numbers. At the same time waves with large wave numbers do
+not benefit from the coarse-grid correction since their accuracy is achieved
+on the fine-grid. Therefore it is expectable to achieve higher accuracy
+for short wave number for a given number of grids.
+
+\subsection{Grid number influence}
+
+\mudfas has a scheme which optimises the number of subgrids as a function
+of the number of points chosen for the grid. We have performed numerical
+experiments in both 2D and 3D with an increasing number of subgrids and with
+two waves with wave number \input{partest4_2d.dat} and
+\input{partest5_2d.dat} respectively.
+
+\begin{table}
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test4_2d.dat
+\hline\hline
+\end{tabular} }
+\vspace*{0.1cm} 
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin}\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test5_2d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean value and standard deviation
+of the defect of the 2D potential as a function of the grid
+size (and thus the number of grids $k$) for the 
+long wave with \protect\input{partest4_2d.dat} (\emph{upper} table)
+short wave with \protect\input{partest5_2d.dat} (\emph{lower} table)} 
+\label{table:test45_2d}
+\end{table}
+
+\begin{table}
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test4_3d.dat
+\hline\hline
+\end{tabular} }
+\vspace*{0.1cm}
+\centerline{\tablesize \begin{tabular}{r|rr|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{lin}\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test5_3d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean value and standard deviation
+of the defect of the 3D potential as a function of the grid
+size (and thus the number of grids $k$) for 
+the long wave with \protect\input{partest4_3d.dat} (\emph{upper} table)
+the short wave with \protect\input{partest5_3d.dat} (\emph{lower} table) }
+\label{table:test45_3d}
+\end{table}
+
+Table~\ref{table:test45_2d} and \ref{table:test45_3d} present the mean and
+standard deviation of the defect of the potential over $\Omega$ in 2D and 3D
+respectively.  It is clearly seen that the more grids, the
+higher accuracy the solver \mudfas achieves.
+
+\subsection{Beam}
+
+We have performed a numerical experiment with a density field occurring when
+an ion beam is injected in a background plasma.
+The beam is along the $y$-axis and the density takes the form
+\begin{align}
+\left\{\begin{array}{lll}
+\rho(\vec{r})&=1+n_b&,  \qquad r_\perp<=d \mbox{ and }  r_\|<=H\\
+\rho(\vec{r})&=1&, \qquad\mbox{otherwise}
+\end{array}\right.
+\end{align}
+where $d$ and $H$ are the radius and length of the beam and $n_b$ its density.
+
+The density of the beam and the electron temperature are 
+\input{partest6_2d.dat} and the radius is $1/6$ of the width 
+and the length is $1/2$ of the depth of the domain $\Omega$.
+
+\begin{figure}
+\centerline{\includegraphics[width=\columnwidth]{test6_2_2d}}
+\centerline{\includegraphics[width=\columnwidth]{test6_2_3d}}
+\caption{Experiment with a beam: \emph{upper} row, the defect of the 
+2D potential, \emph{lower} row, the defect of a cut into the $xy$-plane of
+the 3D potential}
+\label{fig:6_2_23d}
+\end{figure}
+
+\begin{table}
+\centerline{\tablesize \begin{tabular}{r|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test6_2d.dat
+\hline\hline
+\end{tabular} }
+\vspace*{0.1cm}
+\centerline{\tablesize \begin{tabular}{r|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+grid size $(k)$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test6_3d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean value and standard deviation of the defect for the 2D potential 
+(\emph{upper} table) and 3D potential (\emph{lower} table)
+for the beam}
+\label{table:test6_23d}
+\end{table}
+
+Figure~\ref{fig:6_2_23d} shows the defect of the potential in both 2D and 3D.
+The defect is calculated for the grid size giving the largest number of
+grids.
+Table~\ref{table:test6_23d} presents the results as a function of the grid
+size, i.e.\ the number of grids. For such a density field, the accuracy is
+doubled by using more than or just 3 grids.
+
+\subsection{Noise influence}
+
+The accuracy of the defect will decrease with increasing noise. Suppose that
+the density field $\rho$ of the beam is superimposed with a Gaussian
+distributed noise with different value of standard deviation $\sigma_g$. 
+This is just the situation when doing PIC simulation.
+
+\begin{table} 
+\centerline{\tablesize \begin{tabular}{l|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}& 
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+$\sigma_g$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\ 
+\hline
+\csname @@input\endcsname test7_2d.dat
+\hline\hline
+\end{tabular} 
+\hspace*{0.1cm}
+\begin{tabular}{l|rr|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mgfas})\|$}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+$\sigma_g$ & $m$ & $\sigma$ & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test7_3d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean and standard deviation of the defect for the 2D potential
+(\emph{left} table) and 3D potential (\emph{right} table)
+for different value of the noise standard deviation}
+\label{table:test7_23d}
+\end{table}
+
+\subsection{Pre-/post-smoothing influence}
+
+The number of pre- and post-smoothing is a parameter that can be used in
+order to improve the accuracy of the solver. Here is a numerical experiment
+that checks all the combinations of the number of pre- and post-smoothing
+from 1 to 4.
+
+\begin{table}
+\centerline{\tablesize \begin{tabular}{l|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+(iprer, ipost) & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test8_2d.dat
+\hline\hline
+\end{tabular} 
+\hspace*{0.1cm}
+\begin{tabular}{l|rr}
+\hline\hline
+\multicolumn{1}{c}{}&
+\multicolumn{2}{|c}{$\|d_h(\phi_\mathrm{mudfas})\|$}\\
+(iprer, ipost) & $m$ & $\sigma$ \\
+\hline
+\csname @@input\endcsname test8_3d.dat
+\hline\hline
+\end{tabular} }
+\caption{Mean and standard deviation of the defect for the 2D potential
+(\emph{left} table) and 3D potential (\emph{right} table) for different
+combination of number of pre- and post-smmothing }
+\label{table:test8_23d}
+\end{table}
+
+\section{Discussion}
+
+We have performed a series of numerical experiment in order to test our
+nonlinear Poisson solver \mudfas.
+\mudfas is definitely more accurate than \mgfas, depending on the test
+performed, varying from 4 times up to more 100 times more accurate.
+
+It turns out that using a three-grid algorithm instead of a two-grid one
+increases the accuracy performances and increasing even more the number of
+grids can be useful to achieve better accuracy especially for low frequency
+spatial structures.
+
+The way \mudfas is implemented makes it very easy to adapt the
+discretisation to other types of elliptic operator as for example Laplacian
+in cylindrical or spherical coordinates.
+
+\bibliography{abbrevs,research,books}
+
+%\clearpage
+\section*{Appendix: correspondence table  mesh size/grid number}
+
+Following is a table giving the number of grids for grid size from 21 to
+359. In each row, the grid size are classified from the one giving the
+largest number to grid to the least.
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix2.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix2}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix3.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix3}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix4.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix4}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix5.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix5}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix6.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix6}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix7.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix7}
+\end{table}
+
+\begin{table}[h]
+\centerline{\tablesize \csname @@input\endcsname appendix8.dat}
+\caption{Number of grid points $n$ and the corresponding number of grids $k$
+as well as the number of points on the coarsest grid $p$ }
+\label{table:appendix8}
+\end{table}
+
+\end{document}
+
